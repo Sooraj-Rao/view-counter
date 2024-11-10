@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Server } from "@/app/page";
+import { API_URL } from "@/lib/utils";
 
 const colorStyles = [
   { value: "1", label: "Blue" },
@@ -71,7 +71,7 @@ export default function Docs() {
 
   useEffect(() => {
     const queryString = new URLSearchParams(params).toString();
-    setImageUrl(`${Server}/test?${queryString}`);
+    setImageUrl(`${API_URL}/test?${queryString}`);
   }, [params]);
 
   const handleChange = (name: string, value: string) => {
@@ -125,7 +125,7 @@ export default function Docs() {
             Markdown with the following URL:
           </p>
           <pre className="bg-gray-100 p-4 rounded-md overflow-x-auto">
-            <code>{`<img src="${Server}/test" alt='View Count' />`}</code>
+            <code>{`<img src="${API_URL}/test" alt='View Count' />`}</code>
           </pre>
         </section>
 
@@ -207,9 +207,9 @@ export default function Docs() {
                 <CardTitle>Default</CardTitle>
               </CardHeader>
               <CardContent>
-                <img src={`${Server}/test`} alt="Default example" />
+                <img src={`${API_URL}/test`} alt="Default example" />
                 <pre className="bg-gray-100 p-2 rounded-md mt-2 overflow-x-auto">
-                  <code>{`${Server}/test`}</code>
+                  <code>{`${API_URL}/test`}</code>
                 </pre>
               </CardContent>
             </Card>
@@ -220,12 +220,12 @@ export default function Docs() {
               </CardHeader>
               <CardContent>
                 <img
-                  src={`${Server}/test?text=Total%20Visits&colorStyle=7`}
+                  src={`${API_URL}/test?text=Total%20Visits&colorStyle=7`}
                   alt="Custom text and color example"
                 />
                 <pre className="bg-gray-100 p-2 rounded-md mt-2 overflow-x-auto">
                   <code>
-                    {`${Server}/test?text=Total%20Visits&colorStyle=7`}
+                    {`${API_URL}/test?text=Total%20Visits&colorStyle=7`}
                   </code>
                 </pre>
               </CardContent>
@@ -237,11 +237,11 @@ export default function Docs() {
               </CardHeader>
               <CardContent>
                 <img
-                  src={`${Server}/test?icon=heart&scale=1.2`}
+                  src={`${API_URL}/test?icon=heart&scale=1.2`}
                   alt="Custom icon and scale example"
                 />
                 <pre className="bg-gray-100 p-2 rounded-md mt-2 overflow-x-auto">
-                  <code>{`${Server}/test?icon=heart&scale=1.2`}</code>
+                  <code>{`${API_URL}/test?icon=heart&scale=1.2`}</code>
                 </pre>
               </CardContent>
             </Card>
@@ -310,7 +310,7 @@ export default function Docs() {
           <Button
             className="mt-4"
             onClick={() =>
-              setImageUrl(`${Server}/test?${new URLSearchParams(params)}`)
+              setImageUrl(`${API_URL}/test?${new URLSearchParams(params)}`)
             }
           >
             Update Preview

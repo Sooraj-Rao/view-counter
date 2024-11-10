@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Server } from "@/app/page";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClipboardCopy } from "lucide-react";
+import { API_URL } from "@/lib/utils";
 
 export default function Create() {
   const [url, setUrl] = useState("");
@@ -44,7 +44,7 @@ export default function Create() {
       }
 
       const data = await response.json();
-      const newUrl = `${Server}/${data.url}`;
+      const newUrl = `${API_URL}/${data.url}`;
       setCreatedUrl(newUrl);
       Cookies.set("token", newUrl, { expires: 7 });
       router.refresh();
