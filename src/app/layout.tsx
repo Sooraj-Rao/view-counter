@@ -3,10 +3,11 @@ import "./globals.css";
 
 import Footer from "@/components/footer";
 import { GeistSans } from "geist/font/sans";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 export const metadata = {
-  title: "View Counter",
-  description: "A customizable view counter for your profiles and pages",
+  title: "ViewCounter",
+  description: "Highly customizable view counter for your profiles and pages",
 };
 
 export default function RootLayout({
@@ -17,9 +18,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.className}>
-        <Header />
-        <main className="min-h-screen overflow-x-hidden">{children}</main>
-        <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          <main className="     min-h-[calc(100vh-7rem)] overflow-x-hidden">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

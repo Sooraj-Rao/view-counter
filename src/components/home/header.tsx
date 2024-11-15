@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Eye, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
-import { ModeToggle } from "./theme/theme-toggle";
 import { siteData } from "@/lib/siteData";
 import { usePathname } from "next/navigation";
+import { ModeToggle } from "../theme/theme-toggle";
 
 export default function Header() {
   const path = usePathname();

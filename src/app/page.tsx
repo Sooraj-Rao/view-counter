@@ -1,6 +1,9 @@
 import Home from "@/components/hero";
 
 export default function Page() {
-  return <Home />;
+  return (
+    <div className=" h-full">
+      <Home />
+    </div>
+  );
 }
-

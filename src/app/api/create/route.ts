@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const { url } = await request.json();
+
   await ConnectDb();
   if (!url) {
     return new NextResponse("URL is required", { status: 400 });

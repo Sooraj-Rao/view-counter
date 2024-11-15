@@ -15,17 +15,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClipboardCopy } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { API_URL } from "@/lib/utils";
 
 export default function Create() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [copy, setCopy] = useState(false);
   const [error, setError] = useState("");
   const [createdUrl, setCreatedUrl] = useState(Cookies.get("token") || "");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -33,27 +34,23 @@ export default function Create() {
     try {
       const response = await fetch("/api/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create counter");
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        throw new Error(data.error || "Failed to create counter");
       }
 
-      const data = await response.json();
       const newUrl = `${API_URL}/${data.url}`;
       setCreatedUrl(newUrl);
       Cookies.set("token", newUrl, { expires: 7 });
       router.refresh();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(`An error occurred: ${err.message}`);
-      } else {
-        setError("An unknown error occurred");
-      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +58,33 @@ export default function Create() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    setCopy(true);
+    setTimeout(() => setCopy(false), 1400);
   };
+
+  const RenderCopySection = ({
+    lable,
+    value,
+  }: {
+    lable: string;
+    value: string;
+  }) => (
+    <div className="space-y-2">
+      <Label>{lable}</Label>
+      <div className="relative">
+        <Input readOnly value={value} />
+        <Button
+          size="icon"
+          variant="ghost"
+          className="absolute right-0 top-0"
+          onClick={() => copyToClipboard(value)}
+        >
+          {copy ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          <span className="sr-only">Copy</span>
+        </Button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -93,149 +116,30 @@ export default function Create() {
           ) : (
             <Tabs defaultValue="html" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="url">URL</TabsTrigger>
                 <TabsTrigger value="html">HTML</TabsTrigger>
                 <TabsTrigger value="markdown">Markdown</TabsTrigger>
-                <TabsTrigger value="readme">README</TabsTrigger>
               </TabsList>
+              <TabsContent value="url" className="mt-4">
+                <RenderCopySection lable="Full Url" value={createdUrl} />
+              </TabsContent>
               <TabsContent value="html" className="mt-4">
-                <div className="space-y-2">
-                  <Label>HTML Image Tag</Label>
-                  <div className="relative">
-                    <Input
-                      readOnly
-                      value={`<img src="${createdUrl}" alt="View Count" />`}
-                    />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="absolute right-0 top-0"
-                      onClick={() =>
-                        copyToClipboard(
-                          `<img src="${createdUrl}" alt="View Count" />`
-                        )
-                      }
-                    >
-                      <ClipboardCopy className="h-4 w-4" />
-                      <span className="sr-only">Copy</span>
-                    </Button>
-                  </div>
-                </div>
+                <RenderCopySection
+                  lable="HTML Image Tag"
+                  value={`<img src="${createdUrl}" alt="View Count" />`}
+                />
               </TabsContent>
               <TabsContent value="markdown" className="mt-4">
-                <div className="space-y-2">
-                  <Label>Markdown Image</Label>
-                  <div className="relative">
-                    <Input readOnly value={`![View Count](${createdUrl})`} />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="absolute right-0 top-0"
-                      onClick={() =>
-                        copyToClipboard(`![View Count](${createdUrl})`)
-                      }
-                    >
-                      <ClipboardCopy className="h-4 w-4" />
-                      <span className="sr-only">Copy</span>
-                    </Button>
-                  </div>
-                </div>
-              </TabsContent>
-              <TabsContent value="readme" className="mt-4">
-                <div className="space-y-2">
-                  <Label>README Example</Label>
-                  <div className="relative">
-                    <textarea
-                      readOnly
-                      className="w-full h-32 p-2 text-sm font-mono bg-gray-100 rounded-md"
-                      value={`# My Awesome Project
-
-![GitHub stars](https://img.shields.io/github/stars/yourusername/your-repo?style=social)
-![View Count](${createdUrl})
-
-## About
-
-This is my awesome project. Check out how many people have viewed it!
-
-## Features
-
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Installation
-
-\`\`\`
-npm install my-awesome-project
-\`\`\`
-
-## Usage
-
-\`\`\`javascript
-const myAwesomeProject = require('my-awesome-project');
-myAwesomeProject.doSomethingAwesome();
-\`\`\`
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License.`}
-                    />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="absolute right-2 top-2"
-                      onClick={() =>
-                        copyToClipboard(`# My Awesome Project
-
-![GitHub stars](https://img.shields.io/github/stars/yourusername/your-repo?style=social)
-![View Count](${createdUrl})
-
-## About
-
-This is my awesome project. Check out how many people have viewed it!
-
-## Features
-
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Installation
-
-\`\`\`
-npm install my-awesome-project
-\`\`\`
-
-## Usage
-
-\`\`\`javascript
-const myAwesomeProject = require('my-awesome-project');
-myAwesomeProject.doSomethingAwesome();
-\`\`\`
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License.`)
-                      }
-                    >
-                      <ClipboardCopy className="h-4 w-4" />
-                      <span className="sr-only">Copy</span>
-                    </Button>
-                  </div>
-                </div>
+                <RenderCopySection
+                  lable="Markdown Image"
+                  value={`![View Count](${createdUrl})`}
+                />
               </TabsContent>
             </Tabs>
           )}
         </CardContent>
         <CardFooter>
-          {error && <p className="text-red-500">{error}</p>}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
         </CardFooter>
       </Card>
     </div>

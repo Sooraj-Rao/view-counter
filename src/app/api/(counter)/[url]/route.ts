@@ -18,6 +18,7 @@ interface SVGOptions {
   iconSize: number;
   padding: number;
   gap: number;
+  width: number;
   bgColor?: string | null;
   textColor?: string | null;
   iconColor?: string | null;
@@ -25,9 +26,10 @@ interface SVGOptions {
   viewsColor?: string | null;
   gradientStart?: string | null;
   gradientEnd?: string | null;
+  borderColor?: string | null;
 }
 
-const cache = new NodeCache({ stdTTL: 120, checkperiod: 120 });
+const cache = new NodeCache({ stdTTL: 1, checkperiod: 1 });
 
 const icons = {
   eye: (color: string) =>
@@ -57,38 +59,7 @@ export async function GET(
   const searchParams = request.nextUrl.searchParams;
   const options: SVGOptions = {
     text: searchParams.get("text") || "Profile Views",
-    colorStyle: (searchParams.get("colorStyle") || "5") as
-      | "1"
-      | "2"
-      | "3"
-      | "4"
-      | "5"
-      | "6"
-      | "7"
-      | "8"
-      | "9"
-      | "10"
-      | "11"
-      | "12"
-      | "13"
-      | "14"
-      | "15"
-      | "16"
-      | "17"
-      | "18"
-      | "19"
-      | "20"
-      | "21"
-      | "22"
-      | "23"
-      | "24"
-      | "25"
-      | "26"
-      | "27"
-      | "28"
-      | "29"
-      | "30",
-    // Lol🤣
+    colorStyle: (searchParams.get("colorStyle") || "5") as ColorStyleKey,
     icon: (searchParams.get("icon") || "eye") as keyof typeof icons,
     scale: parseFloat(searchParams.get("scale") || "1"),
     borderRadius: parseInt(searchParams.get("borderRadius") || "20"),
@@ -98,6 +69,7 @@ export async function GET(
     iconSize: parseInt(searchParams.get("iconSize") || "24"),
     padding: parseInt(searchParams.get("padding") || "12"),
     gap: parseInt(searchParams.get("gap") || "8"),
+    width: parseInt(searchParams.get("width") || "220"),
     bgColor: searchParams.get("bgColor"),
     textColor: searchParams.get("textColor"),
     iconColor: searchParams.get("iconColor"),
@@ -105,29 +77,37 @@ export async function GET(
     viewsColor: searchParams.get("viewsColor"),
     gradientStart: searchParams.get("gradientStart"),
     gradientEnd: searchParams.get("gradientEnd"),
+    borderColor: searchParams.get("borderColor"),
   };
 
+  const getMe = request.url.split("me=")[1];
+  const isMe = getMe === process.env.OWNER;
   try {
-    await ConnectDb();
-
-    const now = Date.now();
-    let viewData;
-    const cachedTimestamp: number | undefined = cache.get(url);
-    if (cachedTimestamp && now - cachedTimestamp < 120000) {
-      console.log("Cooldown active - not incrementing view count");
+    let views;
+    const isTesting = url === "test";
+    if (!isTesting) {
+      await ConnectDb();
+      const now = Date.now();
+      let viewData;
+      const cachedTimestamp: number | undefined = cache.get(url);
+      if (cachedTimestamp && now - cachedTimestamp < 120000) {
+        console.log("Cooldown active - not incrementing view count");
+      } else if (isMe) {
+        viewData = await View.findOne({ url });
+      } else {
+        cache.set(url, now);
+        viewData = await View.findOneAndUpdate(
+          { url },
+          { $inc: { views: 1 } },
+          { new: true, upsert: true }
+        );
+        if (viewData) cache.set(`${url}_views`, viewData.views);
+      }
+      views = cache.get(`${url}_views`) || viewData?.views || 0;
     } else {
-      cache.set(url, now);
-      viewData = await View.findOneAndUpdate(
-        { url },
-        { $inc: { views: 1 } },
-        { new: true, upsert: true }
-      );
-      if (viewData) cache.set(`${url}_views`, viewData.views);
+      views = 100;
     }
-
-    const views = cache.get(`${url}_views`) || viewData?.views || 0;
-
-    const svg = generateSVG(views, options);
+    const svg = generateSVG(url, views, options);
 
     return new NextResponse(svg, {
       headers: {
@@ -144,55 +124,29 @@ export async function GET(
   }
 }
 
-function generateSVG(views: number, options: SVGOptions): string {
-  const baseStyle = colorStyles[options.colorStyle] || colorStyles["1"];
+function generateSVG(url: string, views: number, options: SVGOptions): string {
+  const baseStyle = colorStyles[options.colorStyle] || colorStyles[1];
   const style = {
     ...baseStyle,
     bgColor: options.bgColor || baseStyle.bgColor,
     textColor: options.textColor || baseStyle.textColor,
     iconColor: options.iconColor || baseStyle.iconColor,
-    viewsBgColor: options.viewsBgColor || baseStyle.viewBgColor,
+    viewBgColor: options.viewsBgColor || baseStyle.viewBgColor,
     viewColor: options.viewsColor || baseStyle.viewColor,
     gradientStart: options.gradientStart || baseStyle.gradientStart,
     gradientEnd: options.gradientEnd || baseStyle.gradientEnd,
+    borderColor: options.borderColor || baseStyle.bgColor,
   };
+  const isGradientTheme = parseInt(options.colorStyle) > 10;
 
-  const scaledFontSize = options.fontSize * options.scale;
-  const scaledIconSize = options.iconSize * options.scale;
-  const scaledPadding = options.padding * options.scale;
-  const scaledGap = options.gap * options.scale;
-
-  const textWidth = options.text.length * scaledFontSize * 0.6;
-  const viewsTextWidth = Math.max(
-    (views.toString().length + 1) * scaledFontSize * 0.6,
-    60 * options.scale
-  );
-
-  const baseWidth =
-    scaledIconSize +
-    textWidth +
-    viewsTextWidth +
-    scaledPadding * 3 +
-    scaledGap * 2;
-  const width = Math.max(320, baseWidth);
-  const height = Math.max(50, scaledIconSize + scaledPadding * 2);
-
-  const scaledWidth = width * options.scale;
-  const scaledHeight = height * options.scale;
-  const scaledBorderRadius = options.borderRadius * options.scale;
-
-  const iconX = scaledPadding;
-  const iconY = (scaledHeight - scaledIconSize) / 2;
-  const textX = iconX + scaledIconSize + scaledGap;
-  const textY = scaledHeight / 2;
-  const viewsX = scaledWidth - viewsTextWidth - scaledPadding;
-  const viewsY = scaledPadding / 2;
-  const viewsHeight = scaledHeight - scaledPadding;
-  const viewsTextX = viewsX + viewsTextWidth / 2;
-  const viewsTextY = scaledHeight / 2;
+  const height = 40;
+  const { width } = options;
 
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${scaledWidth}" height="${scaledHeight}" viewBox="0 0 ${scaledWidth} ${scaledHeight}">
+  <svg xmlns="http://www.w3.org/2000/svg" width="${
+    width * options.scale
+  }" height="${height * options.scale}" viewBox="0 0 ${width} ${height}">
+    <a href="https://viewcount.soorajrao.in?ref=${url}" target="_blank">
       <defs>
         <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" style="stop-color:${
@@ -203,47 +157,70 @@ function generateSVG(views: number, options: SVGOptions): string {
           };stop-opacity:1" />
         </linearGradient>
         <filter id="shadow">
-          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+          <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.3"/>
         </filter>
       </defs>
 
-      <rect width="${scaledWidth}" height="${scaledHeight}" rx="${scaledBorderRadius}" fill="${
-    style.bgColor
-  }" filter="url(#shadow)" />
+      <rect width="${width}" height="${height}" rx="${
+    options.borderRadius
+  }" fill="${style.borderColor}" />
+      <rect x="1" y="1" width="${width - 2}" height="${height - 2}" rx="${
+    options.borderRadius - 1
+  }" fill="url(#grad)" filter="url(#shadow)" />
+      ${
+        isGradientTheme
+          ? ""
+          : `<rect x="2" y="2" width="${width - 4}" height="${
+              height - 4
+            }" rx="${options.borderRadius - 2}" fill="${style.bgColor}" />`
+      }
 
-      <svg x="${iconX}" y="${iconY}" width="${scaledIconSize}" height="${scaledIconSize}" viewBox="0 0 24 24" fill="none">
+      <svg x="12" y="8" width="${options.iconSize}" height="${
+    options.iconSize
+  }" viewBox="0 0 24 24" fill="none">
         ${icons[options.icon](style.iconColor)}
       </svg>
 
-      <text 
-        x="${textX}" 
-        y="${textY}" 
-        font-family="${options.fontFamily}" 
-        font-size="${scaledFontSize}" 
-        fill="${style.textColor}" 
-        font-weight="${options.fontWeight}"
-        dominant-baseline="central"
-      >${options.text}</text>
+      <text x="44" y="${height / 2 + 5}" font-family="${
+    options.fontFamily
+  }" font-size="${options.fontSize}" fill="${style.textColor}" font-weight="${
+    options.fontWeight
+  }">${options.text}</text>
 
-      <rect 
-        x="${viewsX}" 
-        y="${viewsY}" 
-        width="${viewsTextWidth}" 
-        height="${viewsHeight}" 
-        rx="${viewsHeight / 2}" 
-        fill="${style.viewsBgColor}" 
-      />
+      <rect x="${width - 68}" y="6" width="60" height="${height - 12}" rx="${
+    (height - 12) / 2
+  }" fill="${style.viewBgColor}" ${
+    isGradientTheme ? 'fill-opacity="0.2"' : ""
+  } filter="url(#shadow)" />
+      <text x="${width - 38}" y="${height / 2 + 5}" font-family="${
+    options.fontFamily
+  }" font-size="${options.fontSize}" fill="${
+    style.viewColor
+  }" text-anchor="middle" font-weight="${
+    options.fontWeight
+  }">${formatLargeNumber(views)}</text>
+    </a>
+  </svg>
+`;
+}
 
-      <text 
-        x="${viewsTextX}" 
-        y="${viewsTextY}" 
-        font-family="${options.fontFamily}" 
-        font-size="${scaledFontSize}" 
-        fill="${style.viewColor}" 
-        text-anchor="middle" 
-        dominant-baseline="central" 
-        font-weight="${options.fontWeight}"
-      >${views.toLocaleString()}</text>
-    </svg>
-  `;
+function formatLargeNumber(number: number): string {
+  function addCommas(num: number): string {
+    return num.toLocaleString("en-US");
+  }
+  if (number < 1000) {
+    return number.toString();
+  }
+  if (number >= 1e9) {
+    const result = (number / 1e9).toFixed(1);
+    return (result.endsWith(".0") ? parseFloat(result) : result) + "B";
+  } else if (number >= 1e6) {
+    const result = (number / 1e6).toFixed(1);
+    return (result.endsWith(".0") ? parseFloat(result) : result) + "M";
+  } else if (number >= 1e3) {
+    const result = (number / 1e3).toFixed(1);
+    return (result.endsWith(".0") ? parseFloat(result) : result) + "K";
+  } else {
+    return addCommas(number);
+  }
 }

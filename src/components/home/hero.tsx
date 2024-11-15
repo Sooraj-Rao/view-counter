@@ -12,10 +12,10 @@ export default function Home() {
       <main className="flex-grow">
         <section className=" ">
           <div className="container mx-auto px-6 py-28  flex flex-col items-center text-center">
-            <h1 className="text-6xl tracking-tight font-extrabold mb-4">
+            <h1 className="sm:text-6xl text-sm tracking-tight fsont-extrabold mb-4">
               Capture Every View, Instantly and Seamlessly
             </h1>
-            <p className="text-xl tracking-tight mb-8 max-w-2xl">
+            <p className="sm:text-xl text-xs tracking-tight mb-8 max-w-2xl">
               Real-time analytics, full customization, no-code setup, and
               seamless integration works anywhere, anytime!
             </p>
