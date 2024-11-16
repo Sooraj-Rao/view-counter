@@ -1,1 +1,1 @@
-![](https://viewcount.soorajrao.in/api/sooraj-viewcount-repo?text=View-Count%20Repo%20Views)
+![](https://viewcount.soorajrao.in/api/sooraj-viewcount-repo?text=Repo%20Views)
