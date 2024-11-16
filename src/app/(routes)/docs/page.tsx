@@ -405,7 +405,7 @@ export default function ViewCounterDocs() {
 
               <div className=" sm:w-96 ">
                 {imageUrl && (
-                  <div className="lg:sticky lg:top-16 lg:self-start flex-shrink-0   ">
+                  <div className="lg:sticky  lg:top-16 lg:self-start flex-shrink-0   ">
                     <h2 className="sm:text-3xl text-lg font-semibold mb-4">
                       Live Preview
                     </h2>
@@ -420,11 +420,11 @@ export default function ViewCounterDocs() {
                   </div>
                 )}
                 <div className="mt-6 flex flex-wrap gap-4">
-                  <Button onClick={() => handleCopy(imageUrl)}>
+                  <Button onClick={() => handleCopy(imageUrl)} className="">
                     {copied ? (
                       <Check className="h-4 w-4 mr-2" />
                     ) : (
-                      <Copy className="h-4 w-4 mr-2" />
+                      <Copy className="h-4 w-4 mr-2 " />
                     )}
                     Copy URL
                   </Button>

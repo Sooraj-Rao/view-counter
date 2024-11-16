@@ -76,10 +76,14 @@ export default function Create() {
         <Button
           size="icon"
           variant="ghost"
-          className="absolute right-0 top-0"
+          className="absolute right-0 top-0 p-1 bg-secondary"
           onClick={() => copyToClipboard(value)}
         >
-          {copy ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          {copy ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <Copy className="h-4 w-4   " />
+          )}
           <span className="sr-only">Copy</span>
         </Button>
       </div>
@@ -87,10 +91,10 @@ export default function Create() {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className=" mx-auto px-4 py-8 ">
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-3xl">Create a View Counter</CardTitle>
+          <CardTitle className=" text-lg sm:text-3xl">Create a View Counter</CardTitle>
           <CardDescription>
             Generate a unique counter for your project
           </CardDescription>

@@ -29,7 +29,7 @@ interface SVGOptions {
   borderColor?: string | null;
 }
 
-const cache = new NodeCache({ stdTTL: 1, checkperiod: 1 });
+const cache = new NodeCache({ stdTTL: 180, checkperiod: 60 }); // 3 minutes TTL, check every minute
 
 const icons = {
   eye: (color: string) =>
@@ -89,24 +89,37 @@ export async function GET(
       await ConnectDb();
       const now = Date.now();
       let viewData;
-      const cachedTimestamp: number | undefined = cache.get(url);
-      if (cachedTimestamp && now - cachedTimestamp < 120000) {
-        console.log("Cooldown active - not incrementing view count");
-      } else if (isMe) {
-        viewData = await View.findOne({ url });
+
+      const cacheKey = `views_${url}`;
+      const cachedViews = cache.get(cacheKey);
+      if (cachedViews !== undefined) {
+        views = cachedViews;
+        console.log("Using cached view count");
       } else {
-        cache.set(url, now);
-        viewData = await View.findOneAndUpdate(
-          { url },
-          { $inc: { views: 1 } },
-          { new: true, upsert: true }
-        );
-        if (viewData) cache.set(`${url}_views`, viewData.views);
+        viewData = await View.findOne({ url });
+        views = viewData ? viewData.views : 0;
+
+        if (!isMe) {
+          const lastIncrementKey = `last_increment_${url}`;
+          const lastIncrement = cache.get(lastIncrementKey) as number;
+          
+          if (!lastIncrement || now - lastIncrement > 180000) {
+            views++;
+            await View.findOneAndUpdate(
+              { url },
+              { $set: { views: views } },
+              { upsert: true }
+            );
+            cache.set(lastIncrementKey, now);
+          }
+        }
+
+        cache.set(cacheKey, views);
       }
-      views = cache.get(`${url}_views`) || viewData?.views || 0;
     } else {
       views = 100;
     }
+
     const svg = generateSVG(url, views, options);
 
     return new NextResponse(svg, {
