@@ -1,7 +1,7 @@
 import "./globals.css";
 import Footer from "@/components/home/footer";
 import Header from "@/components/home/header";
-// import { GeistSans } from "geist/font/sans";
+// import { GeistSans } from "geist/font/sans";g
 import { ThemeProvider } from "@/components/theme/theme-provider";
 
 export const metadata = {
