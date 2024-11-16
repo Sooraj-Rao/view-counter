@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { NextRequest, NextResponse } from "next/server";
 import { ConnectDb } from "@/app/lib/connect";
 import { View } from "@/app/lib/model";
 import NodeCache from "node-cache";
 import { colorStyles } from "@/app/lib/colorStyles";
+import { SendMail } from "@/actions/mail";
 
 type ColorStyleKey = keyof typeof colorStyles;
 
@@ -29,7 +31,7 @@ interface SVGOptions {
   borderColor?: string | null;
 }
 
-const cache = new NodeCache({ stdTTL: 180, checkperiod: 60 }); // 3 minutes TTL, check every minute
+const cache = new NodeCache({ stdTTL: 180, checkperiod: 60 });
 
 const icons = {
   eye: (color: string) =>
@@ -51,7 +53,6 @@ export async function GET(
   { params }: { params: { url: string } }
 ) {
   const { url } = params;
-
   if (!url) {
     return NextResponse.json({ error: "URL is required" }, { status: 400 });
   }
@@ -82,6 +83,8 @@ export async function GET(
 
   const getMe = request.url.split("me=")[1];
   const isMe = getMe === process.env.OWNER;
+  const cacheKey = `views_${url}`;
+  const cachedViews = cache.get(cacheKey);
   try {
     let views;
     const isTesting = url === "test";
@@ -90,8 +93,6 @@ export async function GET(
       const now = Date.now();
       let viewData;
 
-      const cacheKey = `views_${url}`;
-      const cachedViews = cache.get(cacheKey);
       if (cachedViews !== undefined) {
         views = cachedViews;
         console.log("Using cached");
@@ -102,7 +103,7 @@ export async function GET(
         if (!isMe) {
           const lastIncrementKey = `last_increment_${url}`;
           const lastIncrement = cache.get(lastIncrementKey) as number;
-          
+
           if (!lastIncrement || now - lastIncrement > 180000) {
             views++;
             await View.findOneAndUpdate(
@@ -112,6 +113,8 @@ export async function GET(
             );
             cache.set(lastIncrementKey, now);
           }
+        } else {
+          console.log("Me using");
         }
 
         cache.set(cacheKey, views);
@@ -121,6 +124,10 @@ export async function GET(
     }
 
     const svg = generateSVG(url, views, options);
+    if (!isMe && !isTesting && !cachedViews) {
+      const { error } = await SendMail({ name: url, url: request.url });
+      console.log("Error: ", error);
+    }
 
     return new NextResponse(svg, {
       headers: {
