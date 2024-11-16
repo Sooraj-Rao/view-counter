@@ -45,7 +45,7 @@ export default function Create() {
 
       const newUrl = `${API_URL}/${data.url}`;
       setCreatedUrl(newUrl);
-      Cookies.set("token", newUrl, { expires: 7 });
+      Cookies.set("token", newUrl, { expires: 365 });
       router.refresh();
     } catch (err) {
       setError(
@@ -94,7 +94,9 @@ export default function Create() {
     <div className=" mx-auto px-4 py-8 ">
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle className=" text-lg sm:text-3xl">Create a View Counter</CardTitle>
+          <CardTitle className=" text-lg sm:text-xl">
+            Create a View Counter
+          </CardTitle>
           <CardDescription>
             Generate a unique counter for your project
           </CardDescription>
@@ -118,28 +120,34 @@ export default function Create() {
               </Button>
             </form>
           ) : (
-            <Tabs defaultValue="html" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="url">URL</TabsTrigger>
-                <TabsTrigger value="html">HTML</TabsTrigger>
-                <TabsTrigger value="markdown">Markdown</TabsTrigger>
-              </TabsList>
-              <TabsContent value="url" className="mt-4">
-                <RenderCopySection lable="Full Url" value={createdUrl} />
-              </TabsContent>
-              <TabsContent value="html" className="mt-4">
-                <RenderCopySection
-                  lable="HTML Image Tag"
-                  value={`<img src="${createdUrl}" alt="View Count" />`}
-                />
-              </TabsContent>
-              <TabsContent value="markdown" className="mt-4">
-                <RenderCopySection
-                  lable="Markdown Image"
-                  value={`![View Count](${createdUrl})`}
-                />
-              </TabsContent>
-            </Tabs>
+            <>
+              <Tabs defaultValue="html" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="url">URL</TabsTrigger>
+                  <TabsTrigger value="html">HTML</TabsTrigger>
+                  <TabsTrigger value="markdown">Markdown</TabsTrigger>
+                </TabsList>
+                <TabsContent value="url" className="mt-4">
+                  <RenderCopySection lable="Full Url" value={createdUrl} />
+                </TabsContent>
+                <TabsContent value="html" className="mt-4">
+                  <RenderCopySection
+                    lable="HTML Image Tag"
+                    value={`<img src="${createdUrl}" alt="View Count" />`}
+                  />
+                </TabsContent>
+                <TabsContent value="markdown" className="mt-4">
+                  <RenderCopySection
+                    lable="Markdown Image"
+                    value={`![View Count](${createdUrl})`}
+                  />
+                </TabsContent>
+              </Tabs>
+              <p className=" mt-7 text-sm">
+                Creation is not mandatory; you can start using the feature
+                directly by providing the required name in the URL.
+              </p>
+            </>
           )}
         </CardContent>
         <CardFooter>

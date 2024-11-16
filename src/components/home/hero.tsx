@@ -1,10 +1,16 @@
+"use client";
 import Link from "next/link";
 import { ArrowRight, Sparkles, Zap, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import fetchData from "@/lib/analytics/fetch-data";
+import Cookies from "js-cookie";
+import { siteData } from "@/lib/siteData";
+import Analytics from "@/lib/analytics/main";
 
 export default function Home() {
   return (
     <div className="">
+      <Analytics />
       <main className="mx-auto px-4 py-14  sm:pt-24 sm:pb-1">
         <div className="text-center space-y-8">
           <h1 className="text-2xl sm:text-6xl font-extrabold tracking-tight text-foreground/80 leading-tight">
@@ -18,13 +24,33 @@ export default function Home() {
             integration that works anywhere, anytime!
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/create">
+            <Link
+              href="/create"
+              onClick={() => {
+                fetchData(
+                  "Create-View-button",
+                  Cookies.get("ref") || "search",
+                  `hero-${siteData.siteName}`,
+                  ""
+                );
+              }}
+            >
               <Button className="group sm:scale-100 scale-90">
                 Create Your ViewCounter
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <Link href="/docs">
+            <Link
+              href="/docs"
+              onClick={() => {
+                fetchData(
+                  "docs-button",
+                  Cookies.get("ref") || "search",
+                  `hero-${siteData.siteName}`,
+                  ""
+                );
+              }}
+            >
               <Button variant="outline" className="group sm:scale-100 scale-90">
                 View Docs
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -33,7 +59,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-2  justify-items-center sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-20 grid grid-cols-1 gap-2  justify-items-center  px-2 lg:grid-cols-3">
           <FeatureCard
             icon={<Sparkles className="h-5 w-5 text-primary" />}
             title="Instant Setup"
@@ -65,7 +91,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="bg-card rounded-lg w-96 shadow-md p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <div className="bg-card rounded-lg w-[90vw] sm:w-auto shadow-md p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="flex items-center space-x-3 mb-3">
         <div className="bg-muted rounded-full p-2">{icon}</div>
         <h3 className="sm:text-lg text-base font-semibold text-card-foreground">

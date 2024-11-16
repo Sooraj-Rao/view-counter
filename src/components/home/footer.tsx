@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 export default function Footer() {
   const { theme } = useTheme();
   const [link, setlink] = useState("");
-  const bgColor = theme === "dark" ? "black" : "white";
+  const bgColor = theme === "dark" ? "rgb(12, 10, 9)" : "white";
   const textColor = "rgb(249, 128, 44)";
   useEffect(
     () =>
@@ -20,7 +20,7 @@ export default function Footer() {
 
   return (
     <footer className="container mx-auto px-6  duration-500 pb-2">
-      <div className="flex sm:px-40 px-4 py-4 sm:py-0  border-t sm:border-none text-xs sm:text-sm  flex-col-reverse sm:flex-row gap-y-3 justify-between items-center">
+      <div className="flex lg:px-20 px-4 py-4 sm:py-0  border-t sm:border-none text-xs sm:text-sm  flex-col-reverse sm:flex-row gap-y-3 justify-between items-center">
         <p>&copy; 2024 ViewCounter</p>
         <img
           className=" hover:scale-[.92] duration-200 scale-90"
