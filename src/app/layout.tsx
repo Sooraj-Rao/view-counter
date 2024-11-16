@@ -1,7 +1,7 @@
 import "./globals.css";
 import Footer from "@/components/home/footer";
 import Header from "@/components/home/header";
-// import { GeistSans } from "geist/font/sans";g
+import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 
 export const metadata = {
@@ -16,9 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-      //  className={GeistSans.className}
-      >
+      <body className={GeistSans.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

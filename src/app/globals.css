@@ -2,21 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "@fontsource/montserrat/400.css";
-@import "@fontsource/montserrat/700.css";
 
-@import "@fontsource/poppins"; /* Defaults to regular weight (400) */
-@import "@fontsource/poppins/700.css"; /* Include specific weights (700 for bold) */
-
-@import "@fontsource/roboto"; /* Defaults to regular weight (400) */
-@import "@fontsource/roboto/700.css"; /* Include specific weights (700 for bold) */
-
-
-body {
-  /* font-family: Arial, Helvetica, sans-serif; */
-  /* font-family: 'Montserrat', sans-serif; */
-  font-family: "Poppins", sans-serif; 
-}
 
 @layer utilities {
   .text-balance {
