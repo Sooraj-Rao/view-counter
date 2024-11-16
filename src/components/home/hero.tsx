@@ -33,7 +33,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-20 grid grid-cols-1 gap-2  justify-items-center sm:grid-cols-2 lg:grid-cols-3">
           <FeatureCard
             icon={<Sparkles className="h-5 w-5 text-primary" />}
             title="Instant Setup"
@@ -42,7 +42,7 @@ export default function Home() {
           <FeatureCard
             icon={<Zap className="h-5 w-5 text-primary" />}
             title="Highly Customizable"
-            description="Effortlessly adjust styles with live previews, instantly seeing your changes.."
+            description="Effortlessly adjust styles with live previews, instantly seeing your changes."
           />
           <FeatureCard
             icon={<BookOpen className="h-5 w-5 text-primary" />}
@@ -65,7 +65,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="bg-card rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <div className="bg-card rounded-lg w-96 shadow-md p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="flex items-center space-x-3 mb-3">
         <div className="bg-muted rounded-full p-2">{icon}</div>
         <h3 className="sm:text-lg text-base font-semibold text-card-foreground">

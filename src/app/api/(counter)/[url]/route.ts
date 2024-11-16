@@ -94,7 +94,7 @@ export async function GET(
       const cachedViews = cache.get(cacheKey);
       if (cachedViews !== undefined) {
         views = cachedViews;
-        console.log("Using cached view count");
+        console.log("Using cached");
       } else {
         viewData = await View.findOne({ url });
         views = viewData ? viewData.views : 0;

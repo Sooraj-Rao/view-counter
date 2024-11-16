@@ -25,10 +25,17 @@ export default function Header() {
   return (
     <header className="shadow-md sticky top-0 z-[999] bg-background/95 backdrop-blur-lg">
       <div className="container mx-auto px-6 py-4">
-        <div className="flex justify-between items-center text-sm">
-          <Link href="/" className="flex items-center space-x-2">
-            <IoEyeSharp className="w-8 h-8 " />
-            <span className="text-xl font-bold ">ViewCounter</span>
+        <div className="flex justify-between  items-center text-sm">
+          <Link
+            href="/"
+            className="flex items-center space-x-2
+         
+          "
+          >
+            <IoEyeSharp className="w-8 h-8 text-primary" />
+            <span className="text-xl font-bold  bg-clip-text text-transparent bg-gradient-to-t from-primary to-primary/60 ">
+              ViewCounter
+            </span>
           </Link>
           <nav className="hidden md:flex items-center gap-x-5 space-x-4">
             {nav.map((item) => (

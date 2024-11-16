@@ -1,31 +1,43 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { ArrowLeft } from "lucide-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
-  const link =
-    "http://localhost:3000/api/sooraj-view-counter?text=Site+Views&colorStyle=5&iconSize=23&bgColor=white&textColor=rgb%28249%2C+128%2C+44%29&iconColor=rgb%28249%2C+128%2C+44%29&viewsBgColor=white&viewsColor=rgb%28249%2C+128%2C+44%29&gradientStart=white&gradientEnd=white&borderColor=white";
+  const { theme } = useTheme();
+  const [link, setlink] = useState("");
+  const bgColor = theme === "dark" ? "black" : "white";
+  const textColor = "rgb(249, 128, 44)";
+  useEffect(
+    () =>
+      setlink(
+        `https://viewcount.soorajrao.in/api//sooraj-view-counter?text=Site+Views&colorStyle=5&iconSize=23&bgColor=${bgColor}&textColor=${textColor}&iconColor=${textColor}&viewsBgColor=${bgColor}&viewsColor=${textColor}&gradientStart=${textColor}&gradientEnd=${bgColor}&borderColor=${bgColor}`
+      ),
+    [theme]
+  );
+
   return (
-    <footer>
-      <div className="container mx-auto px-6 ">
-        <div className="flex sm:px-40 px-4 py-4 sm:py-0 border-t sm:border-none text-xs sm:text-sm  flex-col-reverse sm:flex-row gap-y-3 justify-between items-center">
-          <p>&copy; 2024 ViewCounter. All rights reserved.</p>
-          <img
-            className=" hover:scale-[.92] duration-100 scale-90"
-            src={link}
-            alt="view count"
-          />
-          <p>
-            Developed by{" "}
-            <Link
-              target="_blank"
-              href="https://soorajrao.in"
-              className="underlines text-primary font-semibold"
-            >
-              Sooraj
-            </Link>
+    <footer className="container mx-auto px-6  duration-500 pb-2">
+      <div className="flex sm:px-40 px-4 py-4 sm:py-0  border-t sm:border-none text-xs sm:text-sm  flex-col-reverse sm:flex-row gap-y-3 justify-between items-center">
+        <p>&copy; 2024 ViewCounter</p>
+        <img
+          className=" hover:scale-[.92] duration-200 scale-90"
+          src={link}
+          alt="view count"
+        />
+        <Link
+          target="_blank"
+          href="https://soorajrao.in?ref=ViewCount"
+          className="group "
+        >
+          <p className="  group-hover:scale-105 duration-200 flex items-center gap-x-2 ">
+            Developed by
+            <span className=" text-primary font-medium">Sooraj</span>
+            <ArrowLeft className="h-4 w-4 text-foreground/50 invisible group-hover:visible rotate-[135deg]" />
           </p>
-        </div>
+        </Link>
       </div>
     </footer>
   );
