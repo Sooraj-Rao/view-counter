@@ -32,8 +32,8 @@ export default function Header() {
          
           "
           >
-            <IoEyeSharp className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold  bg-clip-text text-transparent bg-gradient-to-t from-primary to-primary/60 ">
+            <IoEyeSharp className="w-8 h-8 text-primary sm:scale-100 scale-75" />
+            <span className="text-lg sm:text-xl font-bold  bg-clip-text text-transparent bg-gradient-to-t from-primary to-primary/60 ">
               ViewCounter
             </span>
           </Link>

@@ -2,10 +2,10 @@
 import Link from "next/link";
 import { ArrowRight, Sparkles, Zap, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import fetchData from "@/lib/analytics/fetch-data";
+import fetchData from "@/components/analytics/fetch-data";
 import Cookies from "js-cookie";
 import { siteData } from "@/lib/siteData";
-import Analytics from "@/lib/analytics/main";
+import Analytics from "@/components/analytics/main";
 
 export default function Home() {
   return (
@@ -91,7 +91,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="bg-card rounded-lg w-[90vw] sm:w-auto shadow-md p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <div className="bg-card rounded-lg w-[90vw] sm:w-96 shadow-md p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="flex items-center space-x-3 mb-3">
         <div className="bg-muted rounded-full p-2">{icon}</div>
         <h3 className="sm:text-lg text-base font-semibold text-card-foreground">

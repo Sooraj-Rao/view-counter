@@ -1,7 +1,7 @@
 import { validate } from "@/actions/validate";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { siteData } from "../siteData";
+import { siteData } from "../../lib/siteData";
 
 const fetchData = async (
   eventType: string,

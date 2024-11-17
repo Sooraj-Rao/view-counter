@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import fetchData from "./fetch-data";
 import Cookies from "js-cookie";
-import { siteData } from "../siteData";
+import { siteData } from "../../lib/siteData";
 
 const Analytics = () => {
   const params = useSearchParams();

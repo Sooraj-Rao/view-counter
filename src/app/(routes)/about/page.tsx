@@ -72,7 +72,7 @@ export default function AboutPage() {
           <p className="text-xs sm:text-base">
             <AppName /> is an innovative solution designed to help users track,
             analyze, and display engagement metrics seamlessly. Whether
-            you&aps;re a professional, creator, or business owner, our platform
+            you&apso;re a professional, creator, or business owner, our platform
             offers tools to showcase your digital presence with style and
             precision.
           </p>

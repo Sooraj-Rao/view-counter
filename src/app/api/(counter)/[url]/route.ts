@@ -124,6 +124,7 @@ export async function GET(
     }
 
     const svg = generateSVG(url, views, options);
+    console.log(cachedViews);
     if (!isMe && !isTesting && !cachedViews) {
       await SendMail({
         name: url,

@@ -3,7 +3,7 @@
 import {
   EmailTemplate,
   EmailTemplateProps,
-} from "@/lib/analytics/email-template";
+} from "@/components/analytics/email-template";
 import { Resend } from "resend";
 
 export const SendMail = async (props: EmailTemplateProps) => {

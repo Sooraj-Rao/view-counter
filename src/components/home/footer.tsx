@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { API_URL } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -13,19 +14,20 @@ export default function Footer() {
   useEffect(
     () =>
       setlink(
-        `https://viewcount.soorajrao.in/api//sooraj-view-counter?text=Site+Views&colorStyle=5&iconSize=23&bgColor=${bgColor}&textColor=${textColor}&iconColor=${textColor}&viewsBgColor=${bgColor}&viewsColor=${textColor}&gradientStart=${textColor}&gradientEnd=${bgColor}&borderColor=${bgColor}`
+        `${API_URL}/sooraj-view-counter?text=Site+Views&colorStyle=5&iconSize=23&bgColor=${bgColor}&textColor=${textColor}&iconColor=${textColor}&viewsBgColor=${bgColor}&viewsColor=${textColor}&gradientStart=${textColor}&gradientEnd=${bgColor}&borderColor=${bgColor}`
       ),
     [theme]
   );
 
   return (
-    <footer className="container mx-auto px-6  duration-500 pb-2">
-      <div className="flex lg:px-20 px-4 py-4 sm:py-0  border-t sm:border-none text-xs sm:text-sm  flex-col-reverse sm:flex-row gap-y-3 justify-between items-center">
+    <footer className=" py-2  mx-auto px-6 flex items-center justify-center  duration-500">
+      <div className="flex min-h-10 items-center  lg:px-20 px-4 sm:py-0 w-full   border-t sm:border-none text-xs sm:text-sm  flex-col-reverse sm:flex-row gap-y-3  justify-between">
         <p>&copy; 2024 ViewCounter</p>
         <img
-          className=" hover:scale-[.92] duration-200 scale-90"
+          className="  hover:scale-[.92] duration-200 scale-90"
           src={link}
-          alt="view count"
+          loading="eager"
+          alt=""
         />
         <Link
           target="_blank"
