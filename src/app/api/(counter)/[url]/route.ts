@@ -27,21 +27,8 @@ export async function GET(
   const isTesting = url === "test";
 
   try {
-    const views = await getViews(url, isMe, isTesting);
+    const views = await getViews(url, isMe, isTesting, request);
     const svg = generateSVG(url, views, options);
-    console.log(
-      "IsMe: ",
-      isMe,
-      "isTesting: ",
-      isTesting,
-      "cached: ",
-      cache.get(`views_${url}`)
-    );
-
-    if (!isMe && !isTesting && !cache.get(`views_${url}`)) {
-      await sendNotificationEmail(url, request.nextUrl.href);
-    }
-
     return new NextResponse(svg, {
       headers: {
         "Content-Type": "image/svg+xml",
@@ -85,7 +72,8 @@ function parseOptions(searchParams: URLSearchParams): SVGOptions {
 async function getViews(
   url: string,
   isMe: boolean,
-  isTesting: boolean
+  isTesting: boolean,
+  request: NextRequest
 ): Promise<number> {
   if (isTesting) return 100;
 
@@ -109,6 +97,9 @@ async function getViews(
         { $set: { views } },
         { upsert: true }
       );
+      if (!isMe && !isTesting && !cache.get(`views_${url}`)) {
+        await SendMail({ name: url, url: request.nextUrl.href });
+      }
       cache.set(lastIncrementKey, now);
     }
   }
@@ -203,15 +194,4 @@ function formatLargeNumber(number: number): string {
   if (number >= 1e6) return `${(number / 1e6).toFixed(1).replace(/\.0$/, "")}M`;
   if (number >= 1e3) return `${(number / 1e3).toFixed(1).replace(/\.0$/, "")}K`;
   return number.toLocaleString("en-US");
-}
-
-async function sendNotificationEmail(
-  url: string,
-  fullUrl: string
-): Promise<void> {
-  const { error } = await SendMail({
-    name: url,
-    url: fullUrl,
-  });
-  if (error) console.log("Error Sending mail --> ", error);
 }

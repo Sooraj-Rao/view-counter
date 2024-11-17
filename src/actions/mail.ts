@@ -4,26 +4,24 @@ import {
   EmailTemplate,
   EmailTemplateProps,
 } from "@/lib/analytics/email-template";
-import { ErrorResponse, Resend } from "resend";
+import { Resend } from "resend";
 
-interface SendMailResponse {
-  error: ErrorResponse | null | unknown;
-}
-
-export const SendMail = async (
-  props: EmailTemplateProps
-): Promise<SendMailResponse> => {
+export const SendMail = async (props: EmailTemplateProps) => {
   try {
     const resend = new Resend(process.env.NEXT_PUBLIC_SEND_API!);
-    const { error } = await resend.emails.send({
+    const { error, data } = await resend.emails.send({
       from: process.env.SEND_FROM!,
       to: [process.env.SEND_TO!],
       subject: `New View - ${props?.name} `,
       react: EmailTemplate(props),
     });
-    return { error };
+
+    if (error) {
+      console.log("Error Sending mail --> ", error);
+    } else {
+      console.log("Data mail --> ", data);
+    }
   } catch (error) {
-    console.log(error);
-    return { error };
+    console.log("Catch Error Sending mail --> ", error);
   }
 };

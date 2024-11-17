@@ -2,8 +2,8 @@
 import * as React from "react";
 
 export interface EmailTemplateProps {
-  name?: string;
-  url?: string;
+  name: string;
+  url: string;
 }
 
 export const EmailTemplate = ({ name, url }: EmailTemplateProps) => {
