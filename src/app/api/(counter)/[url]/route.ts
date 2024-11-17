@@ -5,7 +5,6 @@ import { View } from "@/app/lib/model";
 import NodeCache from "node-cache";
 import { colorStyles } from "@/app/lib/colorStyles";
 import { SendMail } from "@/actions/mail";
-import { GetData } from "@/lib/info";
 
 type ColorStyleKey = keyof typeof colorStyles;
 
@@ -57,8 +56,6 @@ export async function GET(
   if (!url) {
     return NextResponse.json({ error: "URL is required" }, { status: 400 });
   }
-
-  GetData(request);
 
   const searchParams = request.nextUrl.searchParams;
   const options: SVGOptions = {
@@ -130,7 +127,7 @@ export async function GET(
     if (!isMe && !isTesting && !cachedViews) {
       const { error } = await SendMail({
         name: url,
-        url: request.nextUrl as unknown as string,
+        url: request.nextUrl.href as unknown as string,
       });
       error && console.log("Error Sending mail --> ", error);
     }
