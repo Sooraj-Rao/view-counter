@@ -1,4 +1,16 @@
-export const colorStyles = {
+export const colorStyles: Record<
+  string,
+  {
+    textColor: string;
+    viewColor: string;
+    viewBgColor: string;
+    iconColor: string;
+    bgColor: string;
+    gradientStart: string;
+    gradientEnd: string;
+    borderColor: string;
+  }
+> = {
   "1": {
     textColor: "#FFFFFF",
     viewColor: "#1E3A8A",
