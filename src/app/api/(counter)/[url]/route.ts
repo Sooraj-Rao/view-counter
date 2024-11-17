@@ -81,6 +81,19 @@ async function getViews(
   const cachedViews = cache.get<number>(cacheKey);
   if (cachedViews !== undefined) return cachedViews;
 
+  if (!isMe && !isTesting && !cache.get(`views_${url}`)) {
+    await SendMail({ name: url, url: request.nextUrl.href });
+  }
+
+  console.log(
+    "IsMe: ",
+    isMe,
+    "isTesting: ",
+    isTesting,
+    "cached: ",
+    cache.get(`views_${url}`)
+  );
+
   await ConnectDb();
   const viewData = await View.findOne({ url });
   let views = viewData ? viewData.views : 0;
@@ -97,9 +110,6 @@ async function getViews(
         { $set: { views } },
         { upsert: true }
       );
-      if (!isMe && !isTesting && !cache.get(`views_${url}`)) {
-        await SendMail({ name: url, url: request.nextUrl.href });
-      }
       cache.set(lastIncrementKey, now);
     }
   }
