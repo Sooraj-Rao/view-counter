@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 
 export const GetData = async (request: NextRequest) => {
+  console.log("1", request.headers.get("x-forwarded-for"));
+  console.log("2", request.ip);
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0] || request.ip;
 

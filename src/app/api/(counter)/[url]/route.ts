@@ -128,7 +128,10 @@ export async function GET(
 
     const svg = generateSVG(url, views, options);
     if (!isMe && !isTesting && !cachedViews) {
-      const { error } = await SendMail({ name: url, url: request.url });
+      const { error } = await SendMail({
+        name: url,
+        url: request.nextUrl as unknown as string,
+      });
       error && console.log("Error Sending mail --> ", error);
     }
 
