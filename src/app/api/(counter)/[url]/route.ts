@@ -5,6 +5,7 @@ import { View } from "@/app/lib/model";
 import NodeCache from "node-cache";
 import { colorStyles } from "@/app/lib/colorStyles";
 import { SendMail } from "@/actions/mail";
+import { GetData } from "@/lib/info";
 
 type ColorStyleKey = keyof typeof colorStyles;
 
@@ -56,6 +57,8 @@ export async function GET(
   if (!url) {
     return NextResponse.json({ error: "URL is required" }, { status: 400 });
   }
+
+  GetData(request);
 
   const searchParams = request.nextUrl.searchParams;
   const options: SVGOptions = {
@@ -126,7 +129,7 @@ export async function GET(
     const svg = generateSVG(url, views, options);
     if (!isMe && !isTesting && !cachedViews) {
       const { error } = await SendMail({ name: url, url: request.url });
-      console.log("Error: ", error);
+      error && console.log("Error Sending mail --> ", error);
     }
 
     return new NextResponse(svg, {

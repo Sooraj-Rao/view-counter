@@ -211,7 +211,7 @@ export default function ViewCounterDocs() {
             {!getUrl && (
               <div className=" my-2">
                 <Link href={"/create"}>
-                  <Button>Create Key</Button>
+                  <Button>Create Counter</Button>
                 </Link>
               </div>
             )}
