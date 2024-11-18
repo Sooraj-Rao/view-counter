@@ -95,7 +95,7 @@ export async function GET(
 
       if (cachedViews !== undefined) {
         views = cachedViews;
-        console.log("Using cached");
+        console.log("Using cached", views);
       } else {
         viewData = await View.findOne({ url });
         views = viewData ? viewData.views : 0;
@@ -124,10 +124,8 @@ export async function GET(
     }
 
     const svg = generateSVG(url, views, options);
-    console.log(cachedViews);
-    console.log(request.nextUrl);
     if (!isMe && !isTesting && !cachedViews) {
-      SendMail({
+      await SendMail({
         name: url,
         url: request.nextUrl.href as unknown as string,
       }).catch((err) => {
