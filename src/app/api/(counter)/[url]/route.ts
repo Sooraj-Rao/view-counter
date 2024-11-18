@@ -124,10 +124,11 @@ export async function GET(
     }
 
     const svg = generateSVG(url, views, options);
+    console.log(!isMe && !isTesting && !cachedViews);
     if (!isMe && !isTesting && !cachedViews) {
       await SendMail({
         name: url,
-        url: request.nextUrl.href as unknown as string,
+        url: request.url as unknown as string,
       }).catch((err) => {
         console.error("Error sending mail:", err);
       });
