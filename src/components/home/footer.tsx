@@ -14,7 +14,7 @@ export default function Footer() {
   useEffect(
     () =>
       setlink(
-        `${API_URL}/sooraj-view-counter?text=Site+Views&colorStyle=5&iconSize=23&bgColor=${bgColor}&textColor=${textColor}&iconColor=${textColor}&viewsBgColor=${bgColor}&viewsColor=${textColor}&gradientStart=${textColor}&gradientEnd=${bgColor}&borderColor=${bgColor}`
+        `${API_URL}/View-Counter-Site?text=Site+Views&colorStyle=5&iconSize=23&bgColor=${bgColor}&textColor=${textColor}&iconColor=${textColor}&viewsBgColor=${bgColor}&viewsColor=${textColor}&gradientStart=${textColor}&gradientEnd=${bgColor}&borderColor=${bgColor}`
       ),
     [theme]
   );

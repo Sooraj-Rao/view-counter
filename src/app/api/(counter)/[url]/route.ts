@@ -52,6 +52,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { url: string } }
 ) {
+  console.log("geo", request.geo);
+  console.log("url", request.url);
+  console.log("all", request) ;
   const { url } = params;
   if (!url) {
     return NextResponse.json({ error: "URL is required" }, { status: 400 });
