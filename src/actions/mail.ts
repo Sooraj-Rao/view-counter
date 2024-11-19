@@ -1,33 +1,3 @@
-// "use server";
-
-// import {
-//   EmailTemplate,
-//   EmailTemplateProps,
-// } from "@/components/analytics/email-template";
-// import { Resend } from "resend";
-
-// export const SendMail = async (props: EmailTemplateProps) => {
-//   try {
-//     const resend = new Resend(process.env.NEXT_PUBLIC_SEND_API!);
-//     const { error, data } = await resend.emails.send({
-//       from: process.env.SEND_FROM!,
-//       to: [process.env.SEND_TO!],
-//       subject: `New View - ${props?.name} `,
-//       react: EmailTemplate(props),
-//     });
-
-//     if (error) {
-//       console.log("Error Sending mail --> ", error);
-//     } else {
-//       console.log("Data mail --> ", data);
-//     }
-//   } catch (error) {
-//     console.log("Catch Error Sending mail --> ", error);
-//   }
-// };
-
-"use server";
-
 import AWS from "aws-sdk";
 
 AWS.config.update({
@@ -41,9 +11,11 @@ const ses = new AWS.SES();
 export const SendMail = async ({
   name,
   url,
+  userIp,
 }: {
   name: string;
   url: string;
+  userIp: string | undefined;
 }) => {
   const params = {
     Source: "ytbilash@gmail.com",
@@ -62,6 +34,7 @@ export const SendMail = async ({
                 <h1>New View Notification</h1>
                 <h4>Name: ${name}</h4>
                 <h4>Url: ${url}</h4>
+                <h4>User IP: ${userIp}</h4>
               </body>
             </html>
           `,
@@ -72,8 +45,10 @@ export const SendMail = async ({
 
   try {
     const response = await ses.sendEmail(params).promise();
-    console.log("Email sent successfully:", response);
+    console.log("Email sent successfully:", response.MessageId);
+    return response.MessageId;
   } catch (error) {
     console.error("Error sending email:", error);
+    throw error;
   }
 };

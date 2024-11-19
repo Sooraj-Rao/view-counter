@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { NextRequest, NextResponse } from "next/server";
 import { ConnectDb } from "@/app/lib/connect";
 import { View } from "@/app/lib/model";
@@ -31,7 +30,7 @@ interface SVGOptions {
   borderColor?: string | null;
 }
 
-const cache = new NodeCache({ stdTTL: 60, checkperiod: 60 });
+const cache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
 
 const icons = {
   eye: (color: string) =>
@@ -52,9 +51,6 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { url: string } }
 ) {
-  console.log("geo", request.geo);
-  console.log("url", request.url);
-  console.log("all", request);
   const { url } = params;
   if (!url) {
     return NextResponse.json({ error: "URL is required" }, { status: 400 });
@@ -86,8 +82,10 @@ export async function GET(
 
   const getMe = request.url.split("me=")[1];
   const isMe = getMe === process.env.OWNER;
-  const cacheKey = `views_${url}`;
+  const userIp = request.headers.get("x-forwarded-for") || request.ip;
+  const cacheKey = `views_${url}_${userIp}`;
   const cachedViews = cache.get(cacheKey);
+
   try {
     let views;
     const isTesting = url === "test";
@@ -98,13 +96,13 @@ export async function GET(
 
       if (cachedViews !== undefined) {
         views = cachedViews;
-        console.log("Using cached", views);
+        console.log("Using cached views for IP:", userIp, views);
       } else {
         viewData = await View.findOne({ url });
         views = viewData ? viewData.views : 0;
 
         if (!isMe) {
-          const lastIncrementKey = `last_increment_${url}`;
+          const lastIncrementKey = `last_increment_${url}_${userIp}`;
           const lastIncrement = cache.get(lastIncrementKey) as number;
 
           if (!lastIncrement || now - lastIncrement > 180000) {
@@ -115,27 +113,29 @@ export async function GET(
               { upsert: true }
             );
             cache.set(lastIncrementKey, now);
+
+            try {
+              await SendMail({
+                name: url,
+                url: request.url,
+                userIp,
+              });
+              console.log("Email sent successfully for URL:", url);
+            } catch (emailError) {
+              console.error("Error sending email:", emailError);
+            }
           }
         } else {
-          console.log("Me using");
+          console.log("Owner view, not incrementing");
         }
 
-        cache.set(cacheKey, views);
+        cache.set(cacheKey, views, 300);
       }
     } else {
       views = 100;
     }
 
     const svg = generateSVG(url, views, options);
-    console.log(!isMe && !isTesting && !cachedViews);
-    if (!isMe && !isTesting && !cachedViews) {
-      await SendMail({
-        name: url,
-        url: request.url as unknown as string,
-      }).catch((err) => {
-        console.error("Error sending mail:", err);
-      });
-    }
 
     return new NextResponse(svg, {
       headers: {
