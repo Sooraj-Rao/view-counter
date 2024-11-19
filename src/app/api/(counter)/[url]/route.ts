@@ -144,6 +144,7 @@ export async function GET(
   }
 }
 
+
 function generateSVG(url: string, views: number, options: SVGOptions): string {
   const baseStyle = colorStyles[options.colorStyle] || colorStyles[1];
   const style = {
