@@ -80,8 +80,6 @@ export async function GET(
     borderColor: searchParams.get("borderColor"),
   };
 
-  const getMe = request.url.split("me=")[1];
-  const isMe = getMe === process.env.OWNER;
   const userIp = request.headers.get("x-forwarded-for") || request.ip;
   const cacheKey = `views_${url}_${userIp}`;
   const cachedViews = cache.get(cacheKey);
@@ -101,32 +99,26 @@ export async function GET(
         viewData = await View.findOne({ url });
         views = viewData ? viewData.views : 0;
 
-        if (!isMe) {
-          const lastIncrementKey = `last_increment_${url}_${userIp}`;
-          const lastIncrement = cache.get(lastIncrementKey) as number;
+        const lastIncrementKey = `last_increment_${url}_${userIp}`;
+        const lastIncrement = cache.get(lastIncrementKey) as number;
 
-          if (!lastIncrement || now - lastIncrement > 180000) {
-            views++;
-            await View.findOneAndUpdate(
-              { url },
-              { $set: { views: views } },
-              { upsert: true }
-            );
-            cache.set(lastIncrementKey, now);
+        if (!lastIncrement || now - lastIncrement > 180000) {
+          views++;
+          await View.findOneAndUpdate(
+            { url },
+            { $set: { views: views } },
+            { upsert: true }
+          );
+          cache.set(lastIncrementKey, now);
 
-            try {
-              await SendMail({
-                name: url,
-                url: request.url,
-                userIp,
-              });
-              console.log("Email sent successfully for URL:", url);
-            } catch (emailError) {
-              console.error("Error sending email:", emailError);
-            }
+          try {
+            await SendMail({
+              name: url,
+            });
+            console.log("Email sent successfully for URL:", url);
+          } catch (emailError) {
+            console.error("Error sending email:", emailError);
           }
-        } else {
-          console.log("Owner view, not incrementing");
         }
 
         cache.set(cacheKey, views, 300);
