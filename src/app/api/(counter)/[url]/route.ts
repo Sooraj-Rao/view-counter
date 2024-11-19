@@ -111,14 +111,9 @@ export async function GET(
           );
           cache.set(lastIncrementKey, now);
 
-          try {
-            await SendMail({
-              name: url,
-            });
-            console.log("Email sent successfully for URL:", url);
-          } catch (emailError) {
-            console.error("Error sending email:", emailError);
-          }
+          await SendMail({
+            name: url,
+          });
         }
 
         cache.set(cacheKey, views, 300);
@@ -143,7 +138,6 @@ export async function GET(
     );
   }
 }
-
 
 function generateSVG(url: string, views: number, options: SVGOptions): string {
   const baseStyle = colorStyles[options.colorStyle] || colorStyles[1];
