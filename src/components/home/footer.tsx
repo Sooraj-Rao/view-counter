@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 
 export default function Footer() {
   const { theme } = useTheme();
-  
   const [link, setlink] = useState("");
   const bgColor = theme === "dark" ? "rgb(12, 10, 9)" : "white";
   const textColor = "rgb(249, 128, 44)";
