@@ -1,6 +1,10 @@
-export interface SVGOptions {
+import { icons } from "./helper";
+
+export type ColorStyleKey = keyof typeof colorStyles;
+
+interface SVGOptions {
   text: string;
-  colorStyle: string;
+  colorStyle: ColorStyleKey;
   icon: keyof typeof icons;
   scale: number;
   borderRadius: number;

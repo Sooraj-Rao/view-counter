@@ -209,7 +209,7 @@ export default function ViewCounterDocs() {
               code={`<img src="${API_URL}/test" alt="View Count" />`}
             />
             {!getUrl && (
-              <div className=" my-2">
+              <div className=" mt-5 mb-3">
                 <Link href={"/create"}>
                   <Button>Create Counter</Button>
                 </Link>
@@ -313,6 +313,36 @@ export default function ViewCounterDocs() {
               </TabsContent>
             </Tabs>
           </section>
+
+          <div className="mb-12 scroll-mt-20">
+            {" "}
+            <h2 className="text-2xl font-bold mb-4">Without SVG Badge</h2>{" "}
+            <p className="mb-4">
+              {" "}
+              The <code>svg=false</code> parameter is ideal when you only need
+              the raw view count and plan to use it in your own custom display.
+              Unlike the SVG badge, this returns a plain number that can be
+              fetched via an API call. It&apos;s particularly useful for
+              integrating view counts into your website with custom styles or
+              layouts.{" "}
+            </p>{" "}
+            <h3 className="text-xl font-semibold mb-2">How to Use</h3>{" "}
+            <p className="mb-4">
+              {" "}
+              You can fetch the view count from the following API endpoint:{" "}
+            </p>
+            <CodeBlock code={`${API_URL}/test?svg=false`} />
+            <h4 className="text-lg font-medium mt-4">Example Output</h4>{" "}
+            <p className="mb-4">
+              {" "}
+              Making an API call to this URL will return a JSON like:{" "}
+            </p>{" "}
+            <pre className=" bg-accent  p-4 pr-20 w-fit  rounded-md">{`{
+  views:100,
+  success:true
+}
+`}</pre>
+          </div>
 
           <section id="examples" className="mb-12 scroll-mt-20 ">
             <h2 className="sm:text-3xl text-lg font-semibold mb-4">Examples</h2>
