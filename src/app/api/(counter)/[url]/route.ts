@@ -64,15 +64,38 @@ export async function GET(
     } else {
       views = 100;
     }
+
+    const responseHeaders = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+    };
+
+    if (request.method === "OPTIONS") {
+      return new NextResponse(null, {
+        status: 200,
+        headers: responseHeaders,
+      });
+    }
+
     if (isSvgRequired && options) {
       return new NextResponse(generateSVG(url, views, options), {
         headers: {
           "Content-Type": "image/svg+xml",
           "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Access-Control-Allow-Origin": "*",
         },
       });
     } else {
-      return NextResponse.json({ views, success: true }, { status: 200 });
+      return NextResponse.json(
+        { views, success: true },
+        {
+          status: 200,
+          headers: responseHeaders,
+        }
+      );
     }
   } catch (error) {
     console.error("Error generating SVG:", error);
