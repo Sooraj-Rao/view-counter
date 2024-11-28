@@ -4,6 +4,20 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const { url } = await request.json();
+  const responseHeaders = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+  };
+
+  if (request.method === "OPTIONS") {
+    return new NextResponse(null, {
+      status: 200,
+      headers: responseHeaders,
+    });
+  }
 
   await ConnectDb();
   if (url !== process.env.OWNER) {
