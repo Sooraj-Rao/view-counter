@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { ConnectDb } from "@/app/lib/connect";
 import { View } from "@/app/lib/model";
 import NodeCache from "node-cache";
-import { SendMail } from "@/actions/mail";
 import { SendOption, generateSVG } from "@/lib/helper";
 
 const cache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
@@ -53,10 +52,6 @@ export async function GET(
             { upsert: true }
           );
           cache.set(lastIncrementKey, now);
-
-          await SendMail({
-            name: url,
-          });
         }
 
         cache.set(cacheKey, views, 300);
