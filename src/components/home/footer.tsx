@@ -22,7 +22,7 @@ export default function Footer() {
   return (
     <footer className=" py-2  mx-auto px-6 flex items-center justify-center  duration-500">
       <div className="flex min-h-10 items-center  lg:px-20 px-4 sm:py-0 w-full   border-t sm:border-none text-xs sm:text-sm  flex-col-reverse sm:flex-row gap-y-3  justify-between">
-        <p>&copy; 2024 ViewCounter</p>
+        <p>&copy; {new Date().getFullYear()} ViewCounter</p>
         <img
           className="  hover:scale-[.92] duration-200 scale-90"
           src={link}
