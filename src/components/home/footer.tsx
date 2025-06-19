@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { siteData } from "@/lib/siteData";
 import { API_URL } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -31,7 +32,7 @@ export default function Footer() {
         />
         <Link
           target="_blank"
-          href="https://soorajrao.in?ref=ViewCount"
+          href={`${siteData.portfolio}`}
           className="group "
         >
           <p className="  group-hover:scale-105 duration-200 flex items-center gap-x-2 ">

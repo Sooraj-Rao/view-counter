@@ -158,8 +158,7 @@ export default function ViewCounterDocs() {
     <div className="flex flex-col relative lg:flex-row w-full min-h-screen bg-background">
       <aside className="w-full  lg:w-64 lg:fixed sticky left-0 lg:top-14  border-b lg:border-r lg:border-b-0">
         <ScrollArea className="h-full py-6 px-4">
-          <h2 className="text-lg font-semibold mb-4">Contents</h2>
-          <nav>
+          <nav className=" space-y-1">
             {sections.map((section) => (
               <a
                 key={section.id}
@@ -180,16 +179,16 @@ export default function ViewCounterDocs() {
 
       <main className="flex lg:ml-64  overflow-auto ">
         <div className="container mx-auto py-10 px-4">
-          <h1 className="sm:text-4xl text-xl font-bold mb-8">Documentation</h1>
+          <h1 className="sm:text-2xl text-xl font-bold mb-8">Documentation</h1>
 
           <section
             id="introduction"
             className="mb-12  scroll-mt-20 tracking-tight "
           >
-            <h2 className="sm:text-3xl text-lg font-semibold mb-4">
+            <h2 className="sm:text-xl text-lg font-semibold mb-4">
               Introduction
             </h2>
-            <p className="  text-sm sm:text-base">
+            <p className="  text-sm sm:text-base text-muted-foreground">
               The View Counter is a customizable API that allows you to add view
               counts to your web pages, GitHub repositories, or any other online
               content. It provides a visually appealing SVG badge that can be
@@ -198,10 +197,10 @@ export default function ViewCounterDocs() {
           </section>
 
           <section id="installation" className="mb-12 scroll-mt-20">
-            <h2 className="sm:text-3xl text-lg font-semibold mb-4">
+            <h2 className="sm:text-xl text-lg font-semibold mb-4">
               Installation
             </h2>
-            <p className="  text-sm sm:text-base mb-4">
+            <p className="  text-sm sm:text-base mb-4 text-muted-foreground">
               To use the View Counter, add an image tag to your HTML or
               Markdown:
             </p>
@@ -218,10 +217,10 @@ export default function ViewCounterDocs() {
           </section>
 
           <section id="parameters" className="mb-12 scroll-mt-20">
-            <h2 className="sm:text-3xl text-lg  font-semibold mb-4">
+            <h2 className="sm:text-xl text-lg  font-semibold mb-4">
               Parameters
             </h2>
-            <p className="mb-4 text-sm sm:text-base">
+            <p className="mb-4 text-sm sm:text-base text-muted-foreground">
               Customize your counter by adding query parameters to the URL:
             </p>
             <Tabs defaultValue="basic" className="text-sm sm:text-base">
@@ -230,7 +229,7 @@ export default function ViewCounterDocs() {
                 <TabsTrigger value="advanced">Advanced</TabsTrigger>
               </TabsList>
               <TabsContent value="basic">
-                <ul className="list-disc pl-6 space-y-2">
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                   <li>
                     <strong>text:</strong> The text to display (default:
                     &apos;&apos;Profile Views&apos;&apos;)
@@ -254,7 +253,7 @@ export default function ViewCounterDocs() {
                 </ul>
               </TabsContent>
               <TabsContent value="advanced">
-                <ul className="list-disc pl-6 space-y-2">
+                <ul className="list-disc text-muted-foreground pl-6 space-y-2">
                   <li>
                     <strong>fontFamily:</strong> Font family for the text
                     (default: Arial, sans-serif)
@@ -316,8 +315,8 @@ export default function ViewCounterDocs() {
 
           <div className="mb-12 scroll-mt-20">
             {" "}
-            <h2 className="text-2xl font-bold mb-4">Without SVG Badge</h2>{" "}
-            <p className="mb-4">
+            <h2 className="text-xl font-bold mb-4">Without SVG Badge</h2>{" "}
+            <p className="mb-4 text-muted-foreground" >
               {" "}
               The <code>svg=false</code> parameter is ideal when you only need
               the raw view count and plan to use it in your own custom display.
@@ -327,13 +326,13 @@ export default function ViewCounterDocs() {
               layouts.{" "}
             </p>{" "}
             <h3 className="text-xl font-semibold mb-2">How to Use</h3>{" "}
-            <p className="mb-4">
+            <p className="mb-4 text-muted-foreground">
               {" "}
               You can fetch the view count from the following API endpoint:{" "}
             </p>
             <CodeBlock code={`${API_URL}/test?svg=false`} />
             <h4 className="text-lg font-medium mt-4">Example Output</h4>{" "}
-            <p className="mb-4">
+            <p className="mb-4 text-muted-foreground">
               {" "}
               Making an API call to this URL will return a JSON like:{" "}
             </p>{" "}
@@ -345,9 +344,9 @@ export default function ViewCounterDocs() {
           </div>
 
           <section id="examples" className="mb-12 scroll-mt-20 ">
-            <h2 className="sm:text-3xl text-lg font-semibold mb-4">Examples</h2>
+            <h2 className="sm:text-xl text-lg font-semibold mb-4">Examples</h2>
             <div>
-              <p className=" mb-3"> Basic Counter</p>
+              <p className=" mb-3 text-muted-foreground"> Basic Counter</p>
               <CodeBlock
                 code={`<img src="${API_URL}/test?text=Profile+Views&icon=eye&colorStyle=3" alt="View Count" />`}
               />
@@ -361,10 +360,10 @@ export default function ViewCounterDocs() {
           </section>
 
           <section id="customization" className="mb-12 scroll-mt-20">
-            <h2 className="sm:text-3xl text-lg font-semibold mb-4">
+            <h2 className="sm:text-xl text-lg font-semibold mb-4">
               Customization
             </h2>
-            <p className="mb-4 text-sm sm:text-base">
+            <p className="mb-4 text-sm sm:text-base text-muted-foreground">
               Adjust various parameters to create a counter that matches your
               brand and design.
             </p>
@@ -436,7 +435,7 @@ export default function ViewCounterDocs() {
               <div className=" sm:w-96 ">
                 {imageUrl && (
                   <div className="lg:sticky  lg:top-16 lg:self-start flex-shrink-0   ">
-                    <h2 className="sm:text-3xl text-lg font-semibold mb-4">
+                    <h2 className="sm:text-xl text-lg font-semibold mb-4">
                       Live Preview
                     </h2>
                     <div className="bg-muted p-4 rounded-lg">
